@@ -1,0 +1,12 @@
+{
+  "name": "vigenere-cipher",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:octaviocarpes/vigenere-cipher.git",
+  "author": "octaviocarpes <octavio.carpes10@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  }
+}
