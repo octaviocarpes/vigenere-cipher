@@ -222,8 +222,10 @@ const shiftLetter = (letter: string, padding: number): string => {
 const parseColumnWithCharacters = async (columns: string[], characters: string[]): Promise<string[]> => {
     let parsedColumns: string[] = []
     const mostFrequentCharacters = await getMostFrequentLettersForPortuguese()
-    let key = ''
-    console.log(chalk.blue.bold(`Parsing [${characters.map(c => c.toUpperCase())}] with `), chalk.green.bold(`[${mostFrequentCharacters.map(c => c.toUpperCase())}]`))
+    console.log(
+        chalk.blue.bold(`Parsing [${characters.map(c => c.toUpperCase())}] with `),
+        chalk.green.bold(`[${mostFrequentCharacters.map(c => c.toUpperCase())}]`)
+    )
 
     for (let i = 0; i < characters.length; i++) {
         const mostFrequent = characters[i]
@@ -240,8 +242,6 @@ const parseColumnWithCharacters = async (columns: string[], characters: string[]
         parsedColumns.push(result)
         result = ''
     }
-
-    // console.log(chalk.yellowBright.bold(`Key is: ${key}`))
 
     return parsedColumns
 }
@@ -260,7 +260,7 @@ const decryptText = (shiftedColumns: string[]): string => {
     return decryptedText
 }
 
-const findEachKeyLetter = async (keySize: number) => {
+const findEachKeyLetter = async (keySize: number): Promise<string[]> => {
     console.log('Trying to find letters with key size of ', keySize)
 
     const cipherMatrix: string[][] = transformCipherIntoMatrix(keySize)
@@ -274,13 +274,18 @@ const findEachKeyLetter = async (keySize: number) => {
     console.log(chalk.green.bold.underline('Most frequent characters:'), )
     console.log(chalk.blue.bold(`[ ${characters} ]`), )
 
-    const shiftedColumns: string[] = await parseColumnWithCharacters(columns, characters)
-
-    const parsedText = decryptText(shiftedColumns)
-
-    console.log(parsedText)
+    return characters
 }
 
 
+const begin = async () => {
+    const keySize = findKeySize(PORTUGUESE_CIPHER)
+    const key = await findEachKeyLetter(keySize)
+    const cipherMatrix: string[][] = transformCipherIntoMatrix(keySize)
+    const columns = getMatrixColumns(cipherMatrix)
+    const shiftedColumns: string[] = await parseColumnWithCharacters(columns, key)
+    const parsedText = decryptText(shiftedColumns)
+    console.log(parsedText)
+}
 
-findEachKeyLetter(findKeySize(PORTUGUESE_CIPHER))
+begin()
